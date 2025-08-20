@@ -46,9 +46,9 @@ export default function Welcome({ auth }) {
                             </Link>
                         </div>
                         <div className="hidden lg:flex lg:gap-x-12">
-                            <a href="#produtos" className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
+                            <Link href={route('produtos.index')} className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
                                 Produtos
-                            </a>
+                            </Link>
                             <a href="#sobre" className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
                                 Sobre Nós
                             </a>
@@ -90,7 +90,7 @@ export default function Welcome({ auth }) {
                 {/* Hero Section */}
                 <div className="relative isolate overflow-hidden pt-14">
                     <img
-                        src="https://images.unsplash.com/photo-1598541264508-4366e5334159?q=80&w=1920&auto=format&fit=crop"
+                        src="/images/fundo_adega.jpg"
                         alt="Garrafas de vinho em uma prateleira de madeira escura"
                         className="absolute inset-0 -z-10 h-full w-full object-cover"
                     />
@@ -104,12 +104,12 @@ export default function Welcome({ auth }) {
                                 Descubra uma seleção exclusiva de vinhos nacionais e importados, escolhidos para proporcionar experiências inesquecíveis.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
-                                <a
-                                    href="#produtos"
+                                <Link
+                                    href={route('produtos.index')}
                                     className="rounded-md bg-amber-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-colors"
                                 >
                                     Ver Catálogo
-                                </a>
+                                </Link>
                                 <a href="#sobre" className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
                                     Nossa História <span aria-hidden="true">→</span>
                                 </a>

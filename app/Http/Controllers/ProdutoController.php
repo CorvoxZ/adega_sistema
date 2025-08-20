@@ -1,20 +1,31 @@
 <?php
 namespace App\Http\Controllers;
 
-    use App\Models\Produto;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Auth; // para pegar o usuário logado
-    use App\Models\Usuario; // sua tabela de usuários
+use App\Models\Produto;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // para pegar o usuário logado
+use App\Models\Usuario; // sua tabela de usuários
+use Inertia\Inertia;
 
 class ProdutoController extends Controller
 {
+    public function index()
+    {
+        // Busca os produtos com paginação de 20 itens por página, ordenando pelos mais recentes.
+        $produtos = Produto::latest()->paginate(20);
+
+        return Inertia::render('Produtos/Index', [
+            'produtos' => $produtos,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao_produto' => 'nullable|string',
             'tipo_produto' => 'nullable|string|max:255',
-            'preco' => 'required|string', // pode vir com vírgula
+            'preco' => 'required|regex:/^\d{1,6}(,\d{1,2})?$/', // Valida formato como 1234,56
         ]);
 
         // Pega o usuário logado
