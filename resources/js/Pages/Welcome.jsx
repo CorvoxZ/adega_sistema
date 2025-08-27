@@ -1,29 +1,4 @@
-import { Link, Head } from '@inertiajs/react';
-
-// Dados de exemplo para os vinhos. No futuro, você pode receber isso do seu Controller.
-const featuredWines = [
-    {
-        id: 1,
-        name: 'Vinho Tinto Reserva Especial',
-        type: 'Tinto Seco',
-        price: 'R$ 120,00',
-        imageUrl: 'https://images.unsplash.com/photo-1585576825237-3173c6b7e1cb?q=80&w=800&auto=format&fit=crop',
-    },
-    {
-        id: 2,
-        name: 'Sauvignon Blanc Clássico',
-        type: 'Branco',
-        price: 'R$ 85,00',
-        imageUrl: 'https://images.unsplash.com/photo-1568213816553-07435731eb10?q=80&w=800&auto=format&fit=crop',
-    },
-    {
-        id: 3,
-        name: 'Rosé de Provence',
-        type: 'Rosé',
-        price: 'R$ 95,00',
-        imageUrl: 'https://images.unsplash.com/photo-1611484569162-de4f87131153?q=80&w=800&auto=format&fit=crop',
-    },
-];
+import { Link, Head, useForm } from '@inertiajs/react';
 
 // Ícone de Carrinho (SVG)
 const CartIcon = () => (
@@ -32,7 +7,17 @@ const CartIcon = () => (
     </svg>
 );
 
-export default function Welcome({ auth }) {
+export default function Welcome({ auth, featuredWines = [], cart }) {
+    const { post } = useForm({});
+
+    function handleAddToCart(productId) {
+        post(route('cart.store'), {
+            product_id: productId,
+        }, {
+            preserveScroll: true, // Evita que a página role para o topo
+        });
+    }
+
     return (
         <>
             <Head title="Bem-vindo à Adega Virtual" />
@@ -57,9 +42,15 @@ export default function Welcome({ auth }) {
                             </a>
                         </div>
                         <div className="flex lg:flex-1 lg:justify-end items-center gap-x-6">
-                            <a href="#" className="text-white hover:text-amber-400 transition-colors">
+                            <Link href="#" className="text-white hover:text-amber-400 transition-colors relative">
                                 <CartIcon />
-                            </a>
+                                {cart.total > 0 && (
+                                    <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                        {cart.total}
+                                    </span>
+                                )}
+                            </Link>
+
                             {auth.user ? (
                                 <Link
                                     href={route('dashboard')}
@@ -97,22 +88,19 @@ export default function Welcome({ auth }) {
                     <div className="absolute inset-0 bg-stone-950/70"></div>
                     <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
                         <div className="text-center">
-                            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl font-serif">
+                            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl font-serif [text-shadow:2px_2px_6px_rgba(0,0,0,0.8)]">
                                 Os Melhores Vinhos, na sua Casa
                             </h1>
-                            <p className="mt-6 text-lg leading-8 text-stone-300">
+                            <p className="mt-6 text-lg leading-8 text-white [text-shadow:1px_1px_4px_rgba(0,0,0,0.8)]">
                                 Descubra uma seleção exclusiva de vinhos nacionais e importados, escolhidos para proporcionar experiências inesquecíveis.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
                                 <Link
                                     href={route('produtos.index')}
-                                    className="rounded-md bg-amber-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-colors"
+                                    className="rounded-md bg-amber-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-all duration-300 transform hover:scale-105"
                                 >
                                     Ver Catálogo
                                 </Link>
-                                <a href="#sobre" className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
-                                    Nossa História <span aria-hidden="true">→</span>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -121,7 +109,7 @@ export default function Welcome({ auth }) {
                 {/* Featured Products Section */}
                 <section id="produtos" className="py-24 sm:py-32">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                        <div className="mx-auto max-w-2xl lg:mx-0 text-center">
+                        <div className="mx-auto max-w-2xl text-center">
                             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl font-serif">Nossos Destaques</h2>
                             <p className="mt-6 text-lg leading-8 text-stone-400">
                                 Uma seleção especial dos vinhos mais apreciados pelos nossos clientes.
@@ -131,26 +119,27 @@ export default function Welcome({ auth }) {
                             {featuredWines.map((wine) => (
                                 <article key={wine.id} className="flex flex-col items-start justify-between bg-stone-800/50 p-6 rounded-lg shadow-lg hover:shadow-amber-500/10 transition-all duration-300 transform hover:-translate-y-1">
                                     <div className="relative w-full">
-                                        <img src={wine.imageUrl} alt={`Garrafa de ${wine.name}`} className="aspect-[9/16] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/4]" />
+                                        <img src={wine.foto_url} alt={`Garrafa de ${wine.nome}`} className="aspect-[9/16] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/4]" />
                                         <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
                                     </div>
                                     <div className="max-w-xl w-full mt-6">
-                                        <div className="flex items-center gap-x-4 text-xs">
-                                            <span className="relative z-10 rounded-full bg-amber-800 px-3 py-1.5 font-medium text-white">
-                                                {wine.type}
+                                        <div className="flex items-center justify-between gap-x-4">
+                                            <span className="relative z-10 rounded-full bg-amber-800 px-3 py-1.5 text-xs font-medium text-white self-center">
+                                                {wine.tipo_produto}
                                             </span>
-                                            <p className="text-stone-400">{wine.price}</p>
+                                            <p className="text-lg font-semibold text-amber-400">{wine.preco_formatado}</p>
                                         </div>
                                         <div className="group relative">
                                             <h3 className="mt-3 text-lg font-semibold leading-6 text-white group-hover:text-amber-400">
-                                                <a href="#"><span className="absolute inset-0" />{wine.name}</a>
+                                                <a href="#"><span className="absolute inset-0" />{wine.nome}</a>
                                             </h3>
-                                            <p className="mt-5 line-clamp-3 text-sm leading-6 text-stone-400">Uma breve descrição do vinho, suas notas e harmonização. Perfeito para ocasiões especiais.</p>
+                                            <p className="mt-5 line-clamp-3 text-sm leading-6 text-stone-400">{wine.descricao_produto || 'Uma breve descrição do vinho, suas notas e harmonização.'}</p>
                                         </div>
                                         <div className="mt-6">
                                             <button
                                                 type="button"
-                                                className="w-full rounded-md bg-amber-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-colors"
+                                                onClick={() => handleAddToCart(wine.id)}
+                                                className="w-full rounded-md bg-amber-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-all duration-300 transform hover:scale-105"
                                             >
                                                 Adicionar ao Carrinho
                                             </button>
@@ -158,6 +147,14 @@ export default function Welcome({ auth }) {
                                     </div>
                                 </article>
                             ))}
+                        </div>
+                        <div className="mt-20 text-center">
+                            <Link
+                                href={route('produtos.index')}
+                                className="rounded-md bg-amber-600 px-4 py-3 text-base font-semibold text-white shadow-lg hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-all duration-300 ease-in-out transform hover:scale-105"
+                            >
+                                Ver nosso catálogo completo
+                            </Link>
                         </div>
                     </div>
                 </section>

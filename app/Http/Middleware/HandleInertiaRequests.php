@@ -39,6 +39,14 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+
+            'cart' => [
+                // Calcula o total de itens no carrinho para exibir no cabeçalho
+                'total' => collect(session('cart', []))->sum('quantity')
+            ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+            ],
         ];
     }
 }
