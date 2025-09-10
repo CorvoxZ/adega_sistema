@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use App\Models\Produto;
 
 class ProdutoSeeder extends Seeder
@@ -32,8 +33,14 @@ class ProdutoSeeder extends Seeder
             ['nome' => 'Guaraná Zero', 'descricao_produto' => 'Refrigerante zero açúcar', 'tipo_produto' => 'refrigerante', 'preco' => 5.50, 'foto' => 'produtos/guarana_zero.jpg'],
         ];
 
+        // Cria um usuário padrão para associar aos produtos, caso não exista.
+        $user = User::firstOrCreate(
+            ['email' => 'thiago.brito@example.com'],
+            ['name' => 'Thiago Brito', 'password' => bcrypt('password')]
+        );
+
         foreach ($produtos as $produto) {
-            $produto['usuario_cadastro'] = 'Thiago Brito';
+            $produto['user_id'] = $user->id;
             Produto::create($produto);
         }
     }

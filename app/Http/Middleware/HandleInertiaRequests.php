@@ -40,10 +40,13 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
 
-            'cart' => [
-                // Calcula o total de itens no carrinho para exibir no cabeçalho
-                'total' => collect(session('cart', []))->sum('quantity')
-            ],
+            'cart' => function () use ($request) {
+                $cartSession = $request->session()->get('cart', []);
+                return [
+                    // Calcula o total de itens no carrinho para exibir no cabeçalho
+                    'total' => collect($cartSession)->sum('quantity'),
+                ];
+            },
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
             ],

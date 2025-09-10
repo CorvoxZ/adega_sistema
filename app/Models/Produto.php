@@ -15,8 +15,8 @@ protected $fillable = [
     'descricao_produto',
     'tipo_produto',
     'preco',
-    'usuario_cadastro',
     'foto',
+    'user_id',
 ];
 
     /**
@@ -45,5 +45,13 @@ protected $fillable = [
     public function getPrecoFormatadoAttribute(): string
     {
         return 'R$ ' . number_format($this->preco, 2, ',', '.');
+    }
+
+    /**
+     * Get the user that owns the product.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -1,12 +1,6 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import Pagination from '@/Components/Pagination';
-
-// Ícone de Carrinho (SVG)
-const CartIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c.51 0 .962.344 1.087.835l.383 1.437M7.5 14.25L5.106 5.165A2.25 2.25 0 002.854 3H2.25" />
-    </svg>
-);
+import MainLayout from '@/Layouts/MainLayout';
 
 export default function Index({ auth, produtos, filters, tiposProduto = [] }) {
     const { data, setData, get, processing } = useForm({
@@ -22,60 +16,21 @@ export default function Index({ auth, produtos, filters, tiposProduto = [] }) {
         });
     }
 
+    function handleAddToCart(produto) {
+        router.post(route('cart.store'), {
+            product_id: produto.id
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Talvez mostrar uma notificação de sucesso
+            },
+        });
+    }
+
     return (
         <>
             <Head title="Nosso Catálogo" />
-            <div className="bg-stone-900 text-stone-300 font-sans min-h-screen">
-                {/* Header */}
-                <header className="bg-stone-950/50 backdrop-blur-sm sticky top-0 z-50">
-                    <nav className="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
-                        <div className="flex lg:flex-1">
-                            <Link href="/" className="-m-1.5 p-1.5">
-                                <span className="text-2xl font-serif font-bold text-white">Adega Virtual</span>
-                            </Link>
-                        </div>
-                        <div className="hidden lg:flex lg:gap-x-12">
-                            <Link href={route('produtos.index')} className="text-sm font-semibold leading-6 text-amber-400">
-                                Produtos
-                            </Link>
-                            <a href="/#sobre" className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
-                                Sobre Nós
-                            </a>
-                            <a href="/#contato" className="text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors">
-                                Contato
-                            </a>
-                        </div>
-                        <div className="flex lg:flex-1 lg:justify-end items-center gap-x-6">
-                            <a href="#" className="text-white hover:text-amber-400 transition-colors">
-                                <CartIcon />
-                            </a>
-                            {auth.user ? (
-                                <Link
-                                    href={route('dashboard')}
-                                    className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-white/10 hover:ring-white/20"
-                                >
-                                    Dashboard
-                                </Link>
-                            ) : (
-                                <>
-                                    <Link
-                                        href={route('login')}
-                                        className="hidden lg:block text-sm font-semibold leading-6 text-white hover:text-amber-400 transition-colors"
-                                    >
-                                        Entrar <span aria-hidden="true">&rarr;</span>
-                                    </Link>
-                                    <Link
-                                        href={route('register')}
-                                        className="rounded-md bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-colors"
-                                    >
-                                        Cadastrar
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    </nav>
-                </header>
-
+            <div className="bg-stone-900 text-stone-300 font-sans">
                 <main className="py-12 sm:py-16">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
                         <div className="text-center mb-12">
@@ -150,6 +105,7 @@ export default function Index({ auth, produtos, filters, tiposProduto = [] }) {
                                             <div className="mt-6">
                                                 <button
                                                     type="button"
+                                                    onClick={() => handleAddToCart(produto)}
                                                     className="w-full rounded-md bg-amber-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-all duration-300 transform hover:scale-105"
                                                 >
                                                     Adicionar ao Carrinho
@@ -177,3 +133,5 @@ export default function Index({ auth, produtos, filters, tiposProduto = [] }) {
         </>
     );
 }
+
+Index.layout = page => <MainLayout {...page.props} children={page} />

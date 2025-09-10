@@ -13,7 +13,10 @@ Route::get('/', [ProdutoController::class, 'welcome'])->name('welcome');
 Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
 
 // Rotas do Carrinho
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::get('/carrinho', [CartController::class, 'index'])->name('cart.index');
+Route::post('/carrinho', [CartController::class, 'store'])->name('cart.store');
+Route::patch('/carrinho/{produto}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/carrinho/{produto}', [CartController::class, 'destroy'])->name('cart.destroy');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -25,12 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Vinhos/Create');
     })->name('vinhos.create');
 
-    // Rota para processar o formulário (será implementada no backend depois)
-    Route::post('/vinhos', function () {
-        // A lógica de validação e salvamento no banco de dados virá aqui.
-        return to_route('dashboard')->with('message', 'Vinho adicionado com sucesso!');
-    })->name('vinhos.store');
-
+    // Rota para salvar um novo produto
+    Route::post('/produtos', [ProdutoController::class, 'store'])->name('produtos.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -1,65 +1,58 @@
-import {
-    Dialog,
-    DialogPanel,
-    Transition,
-    TransitionChild,
-} from '@headlessui/react';
+import { Link } from '@inertiajs/react';
 
-export default function Modal({
-    children,
-    show = false,
-    maxWidth = '2xl',
-    closeable = true,
-    onClose = () => {},
-}) {
-    const close = () => {
-        if (closeable) {
-            onClose();
-        }
-    };
-
-    const maxWidthClass = {
-        sm: 'sm:max-w-sm',
-        md: 'sm:max-w-md',
-        lg: 'sm:max-w-lg',
-        xl: 'sm:max-w-xl',
-        '2xl': 'sm:max-w-2xl',
-    }[maxWidth];
+const Modal = ({ show, onClose, title, children, actions }) => {
+    if (!show) {
+        return null;
+    }
 
     return (
-        <Transition show={show} leave="duration-200">
-            <Dialog
-                as="div"
-                id="modal"
-                className="fixed inset-0 z-50 flex transform items-center overflow-y-auto px-4 py-6 transition-all sm:px-0"
-                onClose={close}
+        <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center"
+            onClick={onClose} // Fecha o modal ao clicar no fundo
+        >
+            <div
+                className="bg-stone-800 rounded-lg shadow-xl p-6 w-full max-w-md m-4 text-white transform transition-all"
+                onClick={(e) => e.stopPropagation()} // Impede que o clique dentro do modal o feche
             >
-                <TransitionChild
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="absolute inset-0 bg-gray-500/75" />
-                </TransitionChild>
+                <div className="text-center">
+                    {/* Ícone de Sucesso */}
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                        <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
 
-                <TransitionChild
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    enterTo="opacity-100 translate-y-0 sm:scale-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                >
-                    <DialogPanel
-                        className={`mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full ${maxWidthClass}`}
+                    {/* Título e Mensagem */}
+                    <h3 className="text-lg leading-6 font-medium font-serif" id="modal-title">
+                        {title}
+                    </h3>
+                    <div className="mt-2">
+                        <p className="text-sm text-stone-400">
+                            {children}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Botões de Ação */}
+                <div className="mt-5 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-full inline-flex justify-center rounded-md border border-stone-600 shadow-sm px-4 py-2 bg-stone-700 text-base font-medium text-white hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-stone-800 focus:ring-amber-500 sm:text-sm transition-colors"
                     >
-                        {children}
-                    </DialogPanel>
-                </TransitionChild>
-            </Dialog>
-        </Transition>
+                        Continuar Comprando
+                    </button>
+                    <Link
+                        href={route('cart.index')}
+                        onClick={onClose}
+                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-amber-600 text-base font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-stone-800 focus:ring-amber-500 sm:text-sm transition-colors"
+                    >
+                        Ir para o Carrinho
+                    </Link>
+                </div>
+            </div>
+        </div>
     );
-}
+};
+
+export default Modal;

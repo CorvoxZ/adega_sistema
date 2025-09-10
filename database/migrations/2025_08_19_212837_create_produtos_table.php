@@ -14,8 +14,9 @@ return new class extends Migration
             $table->text('descricao_produto')->nullable(); // descrição
             $table->string('tipo_produto')->nullable(); // tipo ou categoria
             $table->decimal('preco', 10, 2); // preço em reais, aceita vírgula no input
-            $table->string('usuario_cadastro'); // nome do usuário que cadastrou
+            $table->string('foto')->nullable();
             $table->timestamps(); // created_at e updated_at
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
         });
     }
 

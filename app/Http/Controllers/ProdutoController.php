@@ -61,10 +61,6 @@ class ProdutoController extends Controller
             'preco' => 'required|regex:/^\d{1,6}(,\d{1,2})?$/', // Valida formato como 1234,56
         ]);
 
-        // Pega o usuário logado
-        $usuario = Auth::user(); // precisa estar autenticado
-        $nomeUsuario = $usuario ? $usuario->nome_completo : 'Desconhecido';
-
         // Converte preço para formato do banco (ponto decimal)
         $preco = str_replace(',', '.', $request->preco);
 
@@ -73,7 +69,7 @@ class ProdutoController extends Controller
             'descricao_produto' => $request->descricao_produto,
             'tipo_produto' => $request->tipo_produto,
             'preco' => $preco,
-            'usuario_cadastro' => $nomeUsuario,
+            'user_id' => Auth::id(), // Associa o produto ao usuário logado
         ]);
 
         return redirect()->back()->with('success', 'Produto cadastrado!');
