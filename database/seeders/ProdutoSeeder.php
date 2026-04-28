@@ -34,13 +34,12 @@ class ProdutoSeeder extends Seeder
         ];
 
         // Cria um usuário padrão para associar aos produtos, caso não exista.
-        $user = User::firstOrCreate(
-            ['email' => 'thiago.brito@example.com'],
-            ['name' => 'Thiago Brito', 'password' => bcrypt('password')]
-        );
+        // $user = User::firstOrCreate(
+        //     ['name' => 'Thiago Brito', 'password' => bcrypt('password')]
+        // );
 
         foreach ($produtos as $produto) {
-            $produto['user_id'] = $user->id;
+            // $produto['user_id'] = $user->id;
             Produto::create($produto);
         }
     }
