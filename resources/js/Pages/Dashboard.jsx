@@ -44,7 +44,7 @@ export default function Dashboard({ auth }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-8">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
-                            Olá, <span className="font-bold">{auth.user.name}</span>! Bem-vindo(a) ao painel de gerenciamento da adega.
+                            Olá, <span className="font-bold">{auth.user.nome_completo ?? auth.user.name ?? auth.user.email}</span>! Bem-vindo(a) ao painel de gerenciamento da adega.
                         </div>
                     </div>
 

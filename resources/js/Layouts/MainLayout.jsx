@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import Modal from '@/Components/Modal';
 
 // Ícone de Carrinho (SVG)
@@ -12,6 +12,7 @@ const CartIcon = () => (
 
 export default function MainLayout({ children }) {
     const { auth, cart, flash } = usePage().props;
+    const { post } = useForm();
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -44,12 +45,18 @@ export default function MainLayout({ children }) {
                     </div>
                     <div className="flex flex-1 justify-end items-center gap-x-6">
                         {auth.user ? (
-                            <Link
-                                href={route('dashboard')}
-                                className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-white/10 hover:ring-white/20"
-                            >
-                                Dashboard
-                            </Link>
+                            <>
+                                <span className="hidden sm:inline-block text-sm font-semibold text-white">
+                                    Olá, {auth.user.nome_completo ?? auth.user.name ?? auth.user.email}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => post(route('logout'))}
+                                    className="rounded-md bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-colors"
+                                >
+                                    Sair
+                                </button>
+                            </>
                         ) : (
                             <>
                                 <Link

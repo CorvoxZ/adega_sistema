@@ -1,4 +1,5 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 const CartIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -62,21 +63,33 @@ const PageLayout = ({ auth, children, cart }) => (
 );
 
 export default function CartIndex({ auth, cart, cartItems, total, flash }) {
-    const { delete: destroy, patch, processing } = useForm();
+    const [processing, setProcessing] = useState(false);
 
     function handleRemoveItem(productId) {
         if (processing) return;
-        destroy(route('cart.destroy', productId), {
+        setProcessing(true);
+
+        router.delete(route('cart.destroy', { produto: productId }), {
             preserveScroll: true,
+            onFinish: () => setProcessing(false),
+            onError: () => setProcessing(false),
         });
     }
 
     function handleUpdateQuantity(productId, newQuantity) {
-        if (processing || newQuantity < 1) return;
-        patch(route('cart.update', productId), {
-            quantity: newQuantity
+        if (processing) return;
+        if (newQuantity < 1) {
+            handleRemoveItem(productId);
+            return;
+        }
+
+        setProcessing(true);
+        router.patch(route('cart.update', { produto: productId }), {
+            quantity: newQuantity,
         }, {
             preserveScroll: true,
+            onFinish: () => setProcessing(false),
+            onError: () => setProcessing(false),
         });
     }
 
@@ -121,9 +134,9 @@ export default function CartIndex({ auth, cart, cartItems, total, flash }) {
                                                         </div>
                                                         <div className="flex flex-1 items-end justify-between text-sm">
                                                             <div className="flex items-center border border-stone-600 rounded">
-                                                                <button onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1 || processing} className="px-2 py-1 text-lg disabled:text-stone-500">-</button>
+                                                                <button type="button" onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)} disabled={processing} className="px-2 py-1 text-lg disabled:text-stone-500">-</button>
                                                                 <span className="px-3 py-1">{item.quantity}</span>
-                                                                <button onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)} disabled={processing} className="px-2 py-1 text-lg">+</button>
+                                                                <button type="button" onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)} disabled={processing} className="px-2 py-1 text-lg">+</button>
                                                             </div>
 
                                                             <div className="flex">

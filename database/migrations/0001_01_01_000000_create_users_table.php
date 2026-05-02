@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // id auto incremento
             $table->string('nome_completo'); // nome do usuário
-            $table->string('cpf', 11)->unique(); // CPF (11 dígitos, único)
+            $table->string('cpf', 11)->unique();
+            $table->string('email', 255)->unique(); // Email (único)
             $table->string('senha'); // senha (vamos usar hash)
             $table->rememberToken();
             $table->timestamps();

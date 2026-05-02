@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'nome_completo',
         'cpf',
+        'email',
         'senha',
     ];
 
@@ -34,14 +35,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Get the password for the user.
      */
-    protected function casts(): array
+    public function getAuthPassword(): string
     {
-        return [
-            'senha' => 'hashed',
-        ];
+        return $this->senha;
     }
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'senha' => 'hashed',
+    ];
 }

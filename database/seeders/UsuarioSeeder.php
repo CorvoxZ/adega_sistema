@@ -13,6 +13,7 @@ class UsuarioSeeder extends Seeder
         Usuario::create([
             'nome_completo' => 'Thiago Brito',
             'cpf' => '17180780723',
+            'email' => 'thiago@example.com',
             'senha' => Hash::make('12345678'),
         ]);
     }
